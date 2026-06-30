@@ -1,0 +1,75 @@
+{% extends "layouts/base.html" %}
+{% block title %}Order {{ order.ref }} — HabeshaFit{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="tracking-page">
+
+    <div class="text-center" style="margin-bottom:24px">
+      <div style="width:48px;height:48px;border-radius:50%;background:var(--g-l);border:1.5px solid var(--g-m);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <i class="ti ti-check" style="font-size:22px;color:var(--g)" aria-hidden="true"></i>
+      </div>
+      <div class="page-hed">Order confirmed!</div>
+      <p class="page-sub">{{ order.designer_name }} has started preparing your {{ order.event_type|lower }} outfit.</p>
+    </div>
+
+    <div class="tracking-card">
+      <div class="tracking-head">
+        <div>
+          <div style="font-size:13px;font-weight:500;color:var(--ink)">{{ order.designer_name }}</div>
+          <div class="tracking-ref">{{ order.ref }}</div>
+        </div>
+        <span class="pill pill-green">{{ order.status_label }}</span>
+      </div>
+
+      <div class="track-steps">
+        {% for step in order.timeline %}
+        <div class="track-step">
+          <div class="track-left">
+            <div class="track-dot {{ step.state }}">
+              {% if step.state == 'done' %}
+              <i class="ti ti-check" aria-hidden="true"></i>
+              {% elif step.state == 'now' %}
+              <i class="ti ti-circle-dot" aria-hidden="true"></i>
+              {% else %}
+              <i class="ti ti-circle" aria-hidden="true"></i>
+              {% endif %}
+            </div>
+            <div class="track-line {{ 'done' if step.state == 'done' else '' }}"></div>
+          </div>
+          <div class="track-right">
+            <div class="track-title">{{ step.title }}</div>
+            {% if step.sub %}<div class="track-sub">{{ step.sub }}</div>{% endif %}
+            {% if step.time %}<div class="track-time">{{ step.time }}</div>{% endif %}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <span class="card-title">Order summary</span>
+      </div>
+      <div class="card-body">
+        <div class="sum-row"><span class="sum-k">Outfit</span><span class="sum-v">{{ order.outfit_summary }}</span></div>
+        <div class="sum-row"><span class="sum-k">Total price</span><span class="sum-v">€{{ order.total_price }}</span></div>
+        <div class="sum-row"><span class="sum-k">Deposit paid</span><span class="sum-v">€{{ order.deposit_paid }}</span></div>
+        <div class="sum-row"><span class="sum-k">Balance due on delivery</span><span class="sum-v">€{{ order.balance_due }}</span></div>
+        <div class="sum-row"><span class="sum-k">Ship to</span><span class="sum-v">{{ order.ship_to }}</span></div>
+        <div class="sum-row"><span class="sum-k">Estimated delivery</span><span class="sum-v">{{ order.eta }}</span></div>
+      </div>
+    </div>
+
+    <div class="flex gap-12 mt-20" style="justify-content:center">
+      <a href="/designers/{{ order.designer_id }}/message" class="btn">
+        <i class="ti ti-message" aria-hidden="true"></i>Message {{ order.designer_name.split(' ')[0] }}
+      </a>
+      <a href="/" class="btn btn-ghost">
+        <i class="ti ti-home" aria-hidden="true"></i>Back to home
+      </a>
+    </div>
+
+  </div>
+</div>
+{% endblock %}

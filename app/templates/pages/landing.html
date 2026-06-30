@@ -1,0 +1,90 @@
+{% extends "layouts/base.html" %}
+{% block title %}HabeshaFit — Dressed for the moment, made for your roots{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <i class="ti ti-map-pin" aria-hidden="true"></i>
+      Trusted by 120+ diaspora families across Europe &amp; North America
+    </div>
+    <h1 class="hero-hed">Dressed for the moment.<br>Made for your <em>roots</em>.</h1>
+    <p class="hero-sub">Tell us your event — we match you with skilled Habesha designers who create your outfit, your size, your story.</p>
+    <div class="hero-actions">
+      <a href="/request/new" class="btn btn-primary btn-lg">
+        <i class="ti ti-sparkles" aria-hidden="true"></i>Start your order
+      </a>
+      <a href="/how-it-works" class="btn btn-lg">
+        <i class="ti ti-player-play" aria-hidden="true"></i>See how it works
+      </a>
+    </div>
+    <div class="hero-trust">
+      <div class="trust-item"><i class="ti ti-star" aria-hidden="true"></i><strong>4.9</strong>&nbsp;average rating</div>
+      <div class="trust-item"><i class="ti ti-users" aria-hidden="true"></i><strong>120+</strong>&nbsp;diaspora customers</div>
+      <div class="trust-item"><i class="ti ti-needle-thread" aria-hidden="true"></i><strong>18</strong>&nbsp;vetted designers</div>
+      <div class="trust-item"><i class="ti ti-shield-check" aria-hidden="true"></i>Deposit protected</div>
+    </div>
+  </section>
+
+  <section class="how-strip">
+    <div class="how-step">
+      <div class="how-num">1</div>
+      <div class="how-title">Choose your event</div>
+      <div class="how-sub">Wedding, church, graduation — we match the right designers.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">2</div>
+      <div class="how-title">Receive 2–3 offers</div>
+      <div class="how-sub">Designers send outfit proposals with price, fabric and timeline.</div>
+    </div>
+    <div class="how-step">
+      <div class="how-num">3</div>
+      <div class="how-title">Pay deposit, track order</div>
+      <div class="how-sub">Secure 40% deposit, held until you confirm delivery.</div>
+    </div>
+  </section>
+
+  <section style="margin-bottom:56px">
+    <div class="section-label">What's the occasion?</div>
+    <div class="events-grid">
+      {% for event in events %}
+      <a href="/request/new?event={{ event.slug }}" class="ev-card" tabindex="0">
+        <div class="ev-check"><i class="ti ti-check" aria-hidden="true"></i></div>
+        <span class="ev-icon">{{ event.icon }}</span>
+        <div class="ev-name">{{ event.name }}</div>
+        <div class="ev-sub">{{ event.sub }}</div>
+      </a>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section style="margin-bottom:64px">
+    <div class="section-label">Why families choose HabeshaFit</div>
+    <div style="display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px;">
+      <div class="card">
+        <div class="card-body">
+          <i class="ti ti-shield-check" style="font-size:24px;color:var(--g)" aria-hidden="true"></i>
+          <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin:12px 0 6px">Deposit protected</div>
+          <p style="font-size:12px;color:var(--ink-3);line-height:1.6">You only pay a 40% deposit. We hold it until you confirm your outfit arrived as promised.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <i class="ti ti-needle-thread" style="font-size:24px;color:var(--g)" aria-hidden="true"></i>
+          <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin:12px 0 6px">Vetted designers</div>
+          <p style="font-size:12px;color:var(--ink-3);line-height:1.6">Every designer is manually reviewed for quality, reliability and authentic craftsmanship.</p>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <i class="ti ti-world" style="font-size:24px;color:var(--g)" aria-hidden="true"></i>
+          <div style="font-family:var(--font-display);font-size:14px;font-weight:600;margin:12px 0 6px">Ships to your city</div>
+          <p style="font-size:12px;color:var(--ink-3);line-height:1.6">From Addis to Frankfurt, London or Toronto — or choose a local tailor near you.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

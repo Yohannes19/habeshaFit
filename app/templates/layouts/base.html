@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HabeshaFit — Dressed for the moment{% endblock %}</title>
+  <meta name="description" content="Order Habesha outfits for weddings, church holidays, graduations and cultural events. Matched with vetted designers from Ethiopia and your city.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <link rel="stylesheet" href="/static/css/habeshafit.css">
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+
+  <nav class="nav">
+    <a href="/" class="nav-logo">
+      <div class="nav-mark">
+        <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <path d="M16 4C10 4 6 9 6 14C6 20 10 24 16 28C22 24 26 20 26 14C26 9 22 4 16 4Z" fill="white" opacity="0.9"/>
+          <path d="M12 14L16 10L20 14L16 24Z" fill="#C2E8DA" opacity="0.9"/>
+        </svg>
+      </div>
+      <span class="nav-name">Habesha<span>Fit</span></span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}">Home</a>
+      <a href="/how-it-works" class="nav-link {% if active_page == 'how' %}active{% endif %}">How it works</a>
+      <a href="/designers" class="nav-link {% if active_page == 'designers' %}active{% endif %}">Designers</a>
+      <a href="/request/new" class="nav-cta">
+        <i class="ti ti-sparkles" aria-hidden="true"></i>Start your order
+      </a>
+    </div>
+  </nav>
+
+  {% if flash %}
+  <div class="page-wrap mt-20">
+    <div class="flash flash-{{ flash.type }}">
+      <i class="ti ti-{{ 'circle-check' if flash.type == 'ok' else 'alert-circle' }}" aria-hidden="true"></i>
+      {{ flash.message }}
+    </div>
+  </div>
+  {% endif %}
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer style="border-top:1px solid var(--border); margin-top:80px; padding:32px 0; background:var(--surf)">
+    <div class="page-wrap flex items-center" style="justify-content:space-between; flex-wrap:wrap; gap:12px;">
+      <div class="flex items-center gap-8">
+        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" style="width:16px;height:16px">
+            <path d="M16 4C10 4 6 9 6 14C6 20 10 24 16 28C22 24 26 20 26 14C26 9 22 4 16 4Z" fill="white" opacity="0.9"/>
+            <path d="M12 14L16 10L20 14L16 24Z" fill="#C2E8DA" opacity="0.9"/>
+          </svg>
+        </div>
+        <span style="font-size:12px;color:var(--ink-3)">© 2026 HabeshaFit. Made for the diaspora.</span>
+      </div>
+      <div class="flex gap-12" style="font-size:12px;color:var(--ink-3)">
+        <a href="/designers/apply" style="color:var(--ink-2)">Become a designer</a>
+        <span>·</span>
+        <a href="#" style="color:var(--ink-2)">Support</a>
+      </div>
+    </div>
+  </footer>
+
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

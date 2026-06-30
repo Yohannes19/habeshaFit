@@ -1,0 +1,90 @@
+{% extends "layouts/base.html" %}
+{% block title %}Your designer offers — HabeshaFit{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="offers-page">
+
+    <div class="page-hed">{{ offers|length }} designers matched for your {{ order_request.event_type|lower }}</div>
+    <p class="page-sub">Review each offer and choose the one that fits your vision.</p>
+
+    <div class="req-strip">
+      <div class="rtag"><i class="ti ti-circle-check" aria-hidden="true"></i>{{ order_request.event_type }}</div>
+      <div class="rsep"></div>
+      <div class="rtag"><i class="ti ti-user" aria-hidden="true"></i>{{ order_request.gender|capitalize }} · {{ order_request.size }}</div>
+      <div class="rsep"></div>
+      <div class="rtag"><i class="ti ti-currency-euro" aria-hidden="true"></i>€{{ order_request.budget }}</div>
+      <div class="rsep"></div>
+      <div class="rtag"><i class="ti ti-map-pin" aria-hidden="true"></i>{{ order_request.city }}, {{ order_request.country }}</div>
+      <div class="rsep"></div>
+      <div class="rtag"><i class="ti ti-calendar" aria-hidden="true"></i>{{ order_request.event_date }}</div>
+    </div>
+
+    {% for offer in offers %}
+    <div class="offer-card {% if loop.first %}featured{% endif %}">
+      {% if loop.first %}
+      <div class="offer-top-badge">Best match — budget &amp; timeline</div>
+      {% endif %}
+      <div class="offer-body">
+        <div class="offer-head">
+          <div class="designer-av" style="background:{{ offer.avatar_bg }}; color:{{ offer.avatar_color }}">
+            {{ offer.initials }}
+          </div>
+          <div class="designer-info">
+            <div class="designer-name">{{ offer.designer_name }}</div>
+            <div class="designer-loc"><i class="ti ti-map-pin" aria-hidden="true"></i>{{ offer.location }}</div>
+            <div class="designer-stars">
+              <div class="star-row">
+                {% for _ in range(5) %}<i class="ti ti-star" aria-hidden="true"></i>{% endfor %}
+              </div>
+              <span class="star-count">{{ offer.rating }} · {{ offer.order_count }} orders</span>
+            </div>
+          </div>
+          <div class="offer-price">
+            <div class="offer-price-main">€{{ offer.price }}</div>
+            <div class="offer-price-sub">{{ offer.shipping_note }}</div>
+          </div>
+        </div>
+
+        <div class="offer-divider"></div>
+
+        <p class="offer-desc">{{ offer.description }}</p>
+
+        <div class="offer-tags">
+          {% for tag in offer.tags %}
+          <div class="offer-tag">{{ tag }}</div>
+          {% endfor %}
+        </div>
+
+        <div class="offer-meta">
+          <div class="meta-cell">
+            <div class="meta-val">{{ offer.production_days }} days</div>
+            <div class="meta-label">Production</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-val">{{ offer.shipping_time }}</div>
+            <div class="meta-label">Shipping</div>
+          </div>
+          <div class="meta-cell">
+            <div class="meta-val">€{{ offer.deposit }}</div>
+            <div class="meta-label">Deposit (40%)</div>
+          </div>
+        </div>
+
+        <div class="offer-actions">
+          <a href="/designers/{{ offer.designer_id }}/message" class="btn btn-sm" style="flex:1; justify-content:center">
+            <i class="ti ti-message" aria-hidden="true"></i>Ask {{ offer.designer_name.split(' ')[0] }}
+          </a>
+          <form method="POST" action="/offers/{{ offer.id }}/choose" style="flex:2">
+            <button type="submit" class="btn btn-primary btn-sm" style="width:100%">
+              <i class="ti ti-check" aria-hidden="true"></i>Choose this offer
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+
+  </div>
+</div>
+{% endblock %}

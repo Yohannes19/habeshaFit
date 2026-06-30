@@ -1,0 +1,255 @@
+{% extends "layouts/base.html" %}
+{% block title %}Start your order — HabeshaFit{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+  <div class="form-page">
+
+    <a href="/" class="form-back">
+      <i class="ti ti-arrow-left" aria-hidden="true"></i>Back to events
+    </a>
+
+    <div class="form-card">
+      <div class="form-top">
+        <div class="prog">
+          <div class="prog-step">
+            <div class="prog-circle active" id="pc1">1</div>
+            <span class="prog-label active" id="pl1">About you</span>
+          </div>
+          <div class="prog-line" id="ln1"></div>
+          <div class="prog-step">
+            <div class="prog-circle" id="pc2">2</div>
+            <span class="prog-label" id="pl2">Event details</span>
+          </div>
+          <div class="prog-line" id="ln2"></div>
+          <div class="prog-step">
+            <div class="prog-circle" id="pc3">3</div>
+            <span class="prog-label" id="pl3">Review</span>
+          </div>
+        </div>
+      </div>
+
+      <form id="request-form" method="POST" action="/request/submit">
+        <input type="hidden" name="event_type" value="{{ event.slug }}">
+
+        <div class="form-body">
+
+          <!-- STEP 1 -->
+          <div class="form-step active" id="step1">
+            <div class="form-hed">Tell us about yourself</div>
+            <div class="form-sub">For your {{ event.name|lower }} outfit — a few details help us match the right designer.</div>
+
+            <div class="field">
+              <label>Gender</label>
+              <div class="gender-group" data-input="gender">
+                <div class="gender-card active" data-value="woman" onclick="selectGender(this)">
+                  <i class="ti ti-woman" aria-hidden="true"></i><span>Woman</span>
+                </div>
+                <div class="gender-card" data-value="man" onclick="selectGender(this)">
+                  <i class="ti ti-man" aria-hidden="true"></i><span>Man</span>
+                </div>
+                <div class="gender-card" data-value="couple" onclick="selectGender(this)">
+                  <i class="ti ti-users" aria-hidden="true"></i><span>Couple set</span>
+                </div>
+              </div>
+              <input type="hidden" name="gender" id="input-gender" value="woman">
+            </div>
+
+            <div class="field">
+              <label>Clothing size</label>
+              <div class="size-group" data-input="size">
+                {% for s in ["XS","S","M","L","XL","2XL","3XL","4XL"] %}
+                <div class="toggle-btn {% if s == 'M' %}active{% endif %}" data-value="{{ s }}" onclick="selectSize(this)">{{ s }}</div>
+                {% endfor %}
+                <div class="toggle-btn" data-value="custom" onclick="selectSize(this)" style="grid-column:span 2; font-size:11px">Custom</div>
+              </div>
+              <input type="hidden" name="size" id="input-size" value="M">
+              <div class="field-hint">Not sure? The designer will reach out to confirm measurements.</div>
+            </div>
+
+            <div class="field">
+              <label>Your budget</label>
+              <div class="toggle-group" data-input="budget">
+                <div class="toggle-btn" data-value="80-150" onclick="selectBudget(this)">€80 – €150</div>
+                <div class="toggle-btn active" data-value="150-300" onclick="selectBudget(this)">€150 – €300</div>
+                <div class="toggle-btn" data-value="300-500" onclick="selectBudget(this)">€300 – €500</div>
+                <div class="toggle-btn" data-value="500+" onclick="selectBudget(this)">€500+</div>
+              </div>
+              <input type="hidden" name="budget" id="input-budget" value="150-300">
+              <div class="field-hint">Includes fabric and production. Shipping is quoted separately.</div>
+            </div>
+          </div>
+
+          <!-- STEP 2 -->
+          <div class="form-step" id="step2">
+            <div class="form-hed">Event details</div>
+            <div class="form-sub">Help designers plan your production timeline accurately.</div>
+
+            <div class="field-row">
+              <div class="field">
+                <label for="country">Country</label>
+                <select name="country" id="country">
+                  <option>Germany</option>
+                  <option>United Kingdom</option>
+                  <option>United States</option>
+                  <option>Sweden</option>
+                  <option>Norway</option>
+                  <option>Canada</option>
+                  <option>Other</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="city">City</label>
+                <input type="text" name="city" id="city" placeholder="e.g. Frankfurt" required>
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="event_date">Event date</label>
+              <input type="date" name="event_date" id="event_date" required>
+              <div class="field-hint">Minimum 4 weeks needed for production and shipping.</div>
+            </div>
+
+            <div class="field">
+              <label for="notes">Style preferences (optional)</label>
+              <textarea name="notes" id="notes" placeholder="e.g. Habesha kemis in soft blue, traditional embroidery, modest neckline. Inspiration photos welcome."></textarea>
+            </div>
+
+            <div class="field">
+              <label for="email">Your email</label>
+              <input type="email" name="email" id="email" placeholder="you@email.com" required>
+              <div class="field-hint">Designers will send proposals here. We never share your address.</div>
+            </div>
+          </div>
+
+          <!-- STEP 3 -->
+          <div class="form-step" id="step3">
+            <div class="form-hed">Review your request</div>
+            <div class="form-sub">We'll match you with 2–3 designers within 24 hours.</div>
+
+            <div class="sum-box">
+              <div class="sum-row"><span class="sum-k">Event</span><span class="sum-v">{{ event.name }}</span></div>
+              <div class="sum-row"><span class="sum-k">Gender</span><span class="sum-v" id="rev-gender">Woman</span></div>
+              <div class="sum-row"><span class="sum-k">Size</span><span class="sum-v" id="rev-size">M</span></div>
+              <div class="sum-row"><span class="sum-k">Budget</span><span class="sum-v" id="rev-budget">€150 – €300</span></div>
+              <div class="sum-row"><span class="sum-k">Ship to</span><span class="sum-v" id="rev-location">—</span></div>
+              <div class="sum-row"><span class="sum-k">Event date</span><span class="sum-v" id="rev-date">—</span></div>
+            </div>
+
+            <div class="deposit-notice">
+              <i class="ti ti-shield-check" aria-hidden="true"></i>
+              <p><strong>No payment now.</strong> You only pay a 40% deposit once you choose a designer's offer. Your deposit is held until you confirm delivery.</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="form-footer">
+          <button type="button" class="btn btn-sm" id="btn-back" onclick="prevStep()" style="visibility:hidden">
+            <i class="ti ti-arrow-left" aria-hidden="true"></i>Back
+          </button>
+          <span class="step-counter" id="step-counter">Step 1 of 3</span>
+          <button type="button" class="btn btn-primary btn-sm" id="btn-next" onclick="nextStep()">
+            Continue<i class="ti ti-arrow-right" aria-hidden="true"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+let currentStep = 1;
+const TOTAL_STEPS = 3;
+
+function showStep(n) {
+  document.querySelectorAll('.form-step').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + n).classList.add('active');
+
+  for (let i = 1; i <= TOTAL_STEPS; i++) {
+    const pc = document.getElementById('pc' + i);
+    const pl = document.getElementById('pl' + i);
+    pc.className = 'prog-circle' + (i < n ? ' done' : i === n ? ' active' : '');
+    pl.className = 'prog-label' + (i < n ? ' done' : i === n ? ' active' : '');
+    pc.innerHTML = i < n ? '<i class="ti ti-check" style="font-size:11px" aria-hidden="true"></i>' : i;
+  }
+  for (let i = 1; i < TOTAL_STEPS; i++) {
+    const ln = document.getElementById('ln' + i);
+    if (ln) ln.className = 'prog-line' + (i < n ? ' done' : '');
+  }
+
+  document.getElementById('step-counter').textContent = `Step ${n} of ${TOTAL_STEPS}`;
+  document.getElementById('btn-back').style.visibility = n > 1 ? 'visible' : 'hidden';
+  const nextBtn = document.getElementById('btn-next');
+  nextBtn.innerHTML = n < TOTAL_STEPS
+    ? 'Continue<i class="ti ti-arrow-right" aria-hidden="true"></i>'
+    : 'Submit request<i class="ti ti-check" aria-hidden="true"></i>';
+
+  currentStep = n;
+  if (n === 3) populateReview();
+}
+
+function nextStep() {
+  if (currentStep === 2 && !validateStep2()) return;
+  if (currentStep < TOTAL_STEPS) {
+    showStep(currentStep + 1);
+  } else {
+    document.getElementById('request-form').submit();
+  }
+}
+function prevStep() { if (currentStep > 1) showStep(currentStep - 1); }
+
+function validateStep2() {
+  const city = document.getElementById('city');
+  const date = document.getElementById('event_date');
+  const email = document.getElementById('email');
+  if (!city.value || !date.value || !email.value) {
+    [city, date, email].forEach(el => {
+      if (!el.value) el.style.borderColor = 'var(--red)';
+    });
+    return false;
+  }
+  return true;
+}
+
+function selectGender(el) {
+  document.querySelectorAll('.gender-card').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('input-gender').value = el.dataset.value;
+}
+function selectSize(el) {
+  el.parentElement.querySelectorAll('.toggle-btn').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('input-size').value = el.dataset.value;
+}
+function selectBudget(el) {
+  el.parentElement.querySelectorAll('.toggle-btn').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('input-budget').value = el.dataset.value;
+}
+
+function populateReview() {
+  const genderLabels = { woman: 'Woman', man: 'Man', couple: 'Couple set' };
+  const budgetLabels = { '80-150':'€80 – €150', '150-300':'€150 – €300', '300-500':'€300 – €500', '500+':'€500+' };
+
+  document.getElementById('rev-gender').textContent = genderLabels[document.getElementById('input-gender').value] || '—';
+  document.getElementById('rev-size').textContent = document.getElementById('input-size').value || '—';
+  document.getElementById('rev-budget').textContent = budgetLabels[document.getElementById('input-budget').value] || '—';
+
+  const city = document.getElementById('city').value;
+  const country = document.getElementById('country').value;
+  document.getElementById('rev-location').textContent = city ? `${city}, ${country}` : '—';
+
+  const dateVal = document.getElementById('event_date').value;
+  if (dateVal) {
+    const d = new Date(dateVal + 'T00:00:00');
+    document.getElementById('rev-date').textContent = d.toLocaleDateString('en-GB', { day:'numeric', month:'long', year:'numeric' });
+  }
+}
+
+// Set min date to 28 days from today
+document.getElementById('event_date').min = new Date(Date.now() + 28*24*60*60*1000).toISOString().split('T')[0];
+</script>
+{% endblock %}

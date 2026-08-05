@@ -1,17 +1,21 @@
 """
 HabeshaFit web routes — serves Jinja2 templates.
-In-memory demo data for now; swap for DB queries once models exist.
+Now backed by SQLite database for persistence and scalability.
 """
 import uuid
 from datetime import date, timedelta
-from fastapi import APIRouter, Request, Form
+from fastapi import APIRouter, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
+from app.db import (
+    create_request, get_request, generate_offers_for_request,
+    create_order, get_order, get_all_designers
+)
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
 
-# ── Demo data ────────────────────────────────────────────────────────────
+# ── Demo data (for landing page only) ────────────────────────────────────
 
 EVENTS = [
     {"slug": "wedding", "icon": "💍", "name": "Wedding", "sub": "Bride, groom & guests"},
@@ -21,85 +25,6 @@ EVENTS = [
 ]
 
 EVENTS_BY_SLUG = {e["slug"]: e for e in EVENTS}
-
-# In-memory request store for demo purposes (replace with DB)
-_requests: dict[str, dict] = {}
-_orders: dict[str, dict] = {}
-
-
-def _demo_offers(request_data: dict) -> list[dict]:
-    """Generate demo designer offers based on the request. Replace with real matching engine."""
-    budget_low = int(request_data.get("budget", "150-300").split("-")[0].replace("+", ""))
-    base = max(budget_low + 40, 150)
-
-    return [
-        {
-            "id": "off_1",
-            "designer_id": "des_selam",
-            "designer_name": "Selam Abrham",
-            "initials": "SA",
-            "avatar_bg": "#E6F5F0",
-            "avatar_color": "#043D2D",
-            "location": "Addis Ababa · ships worldwide",
-            "rating": "4.9",
-            "order_count": 38,
-            "price": base,
-            "shipping_note": "+ €35 shipping",
-            "description": (
-                "Traditional Habesha kemis in hand-woven Tibeb fabric with gold and ivory "
-                "embroidery at the neckline, sleeves and hem. Available in soft blue, white "
-                "or ivory. Includes matching netela."
-            ),
-            "tags": ["Hand-woven Tibeb", "Gold embroidery", "Includes netela", "Custom measurements"],
-            "production_days": 18,
-            "shipping_time": "7–10 days",
-            "deposit": round(base * 0.4),
-        },
-        {
-            "id": "off_2",
-            "designer_id": "des_mekdes",
-            "designer_name": "Mekdes Tadesse",
-            "initials": "MT",
-            "avatar_bg": "#E6F5F0",
-            "avatar_color": "#065C44",
-            "location": "Gondar · ships worldwide",
-            "rating": "4.8",
-            "order_count": 21,
-            "price": base - 30,
-            "shipping_note": "+ €35 shipping",
-            "description": (
-                "Classic white Habesha kemis with hand-stitched Gondar-style Tibeb border "
-                "and minimal collar embroidery. Lightweight cotton blend, breathable for "
-                "European summer weddings."
-            ),
-            "tags": ["Cotton blend", "Gondar style", "Lightweight"],
-            "production_days": 14,
-            "shipping_time": "7–10 days",
-            "deposit": round((base - 30) * 0.4),
-        },
-        {
-            "id": "off_3",
-            "designer_id": "des_hiwot",
-            "designer_name": "Hiwot Girma",
-            "initials": "HG",
-            "avatar_bg": "#E6F1FB",
-            "avatar_color": "#185FA5",
-            "location": f"{request_data.get('city', 'Frankfurt')}, {request_data.get('country', 'Germany')} · local tailor",
-            "rating": "4.7",
-            "order_count": 12,
-            "price": base + 65,
-            "shipping_note": "no shipping",
-            "description": (
-                "Local tailor — in-person fitting available. Uses imported Tibeb fabric "
-                "from Addis. Premium finish, fastest option. Can accommodate last-minute "
-                "size changes."
-            ),
-            "tags": ["Local fitting", "No shipping wait", "Premium finish", "Last-minute friendly"],
-            "production_days": 10,
-            "shipping_time": "Pickup / local",
-            "deposit": round((base + 65) * 0.4),
-        },
-    ]
 
 
 # ── Routes ───────────────────────────────────────────────────────────────
@@ -135,12 +60,13 @@ async def submit_request(
     notes: str = Form(""),
     email: str = Form(...),
 ):
+    # Generate short request ID
     request_id = str(uuid.uuid4())[:8]
-    event_name = EVENTS_BY_SLUG.get(event_type, EVENTS[0])["name"]
-
-    _requests[request_id] = {
+    
+    # Save to database
+    await create_request({
         "id": request_id,
-        "event_type": event_name,
+        "event_type": EVENTS_BY_SLUG.get(event_type, EVENTS[0])["name"],
         "gender": gender,
         "size": size,
         "budget": budget,
@@ -149,82 +75,111 @@ async def submit_request(
         "event_date": event_date,
         "notes": notes,
         "email": email,
-    }
+    })
+    
     return RedirectResponse(url=f"/offers/{request_id}", status_code=303)
 
 
 @router.get("/offers/{request_id}", response_class=HTMLResponse)
 async def offers(request: Request, request_id: str):
-    request_data = _requests.get(request_id)
+    # Get request from database
+    request_data = await get_request(request_id)
+    
     if not request_data:
-        # Fallback demo data if request_id not found (e.g. direct visit)
-        request_data = {
-            "id": request_id, "event_type": "Wedding", "gender": "woman", "size": "M",
-            "budget": "150-300", "country": "Germany", "city": "Frankfurt",
-            "event_date": "2025-09-20", "notes": "", "email": "demo@example.com",
-        }
-
-    offers_list = _demo_offers(request_data)
-
+        raise HTTPException(status_code=404, detail="Request not found")
+    
+    req_dict = request_data.to_dict()
+    
+    # Generate offers using matching algorithm
+    offers_list = await generate_offers_for_request(req_dict)
+    
     # Pretty-format event date
     try:
-        d = date.fromisoformat(request_data["event_date"])
-        request_data["event_date"] = d.strftime("%d %b %Y")
+        d = date.fromisoformat(req_dict["event_date"])
+        req_dict["event_date"] = d.strftime("%d %b %Y")
     except (ValueError, KeyError):
         pass
 
     return templates.TemplateResponse(request, "pages/offers.html", {
         "active_page": "offers",
-        "order_request": request_data,
+        "order_request": req_dict,
         "offers": offers_list,
         "flash": None,
     })
 
 
 @router.post("/offers/{offer_id}/choose")
-async def choose_offer(offer_id: str):
-    order_id = str(uuid.uuid4())[:8]
-
+async def choose_offer(offer_id: str, request: Request):
+    # Parse offer data from form or use defaults
+    # In production, this would come from the selected offer
+    request_id = request.query_params.get("request_id", "demo")
+    
+    # Get request data to build order
+    req = await get_request(request_id)
+    if not req:
+        # Fallback for demo
+        req_dict = {
+            "city": "Frankfurt", "country": "Germany", "event_type": "Wedding"
+        }
+    else:
+        req_dict = req.to_dict()
+    
+    # Designer mapping based on offer_id
     designer_map = {
-        "off_1": ("Selam Abrham", "des_selam", 220),
-        "off_2": ("Mekdes Tadesse", "des_mekdes", 190),
-        "off_3": ("Hiwot Girma", "des_hiwot", 285),
+        f"off_{did}": (name, did, price) 
+        for did, name, price in [
+            ("des_selam", "Selam Abrham", 220),
+            ("des_mekdes", "Mekdes Tadesse", 190),
+            ("des_hiwot", "Hiwot Girma", 285),
+            ("des_yonas", "Yonas Kebede", 310),
+            ("des_lily", "Lily Haile", 265),
+        ]
     }
-    designer_name, designer_id, price = designer_map.get(offer_id, ("Selam Abrham", "des_selam", 220))
+    
+    designer_name, designer_id, price = designer_map.get(
+        offer_id, ("Selam Abrham", "des_selam", 220)
+    )
     deposit = round(price * 0.4)
-
-    _orders[order_id] = {
-        "ref": f"HF-{order_id.upper()}",
-        "designer_name": designer_name,
+    order_id = str(uuid.uuid4())[:8]
+    
+    # Calculate ETA
+    eta_date = date.today() + timedelta(days=25)
+    
+    # Create order in database
+    await create_order({
+        "id": order_id,
+        "request_id": request_id,
+        "offer_id": offer_id,
         "designer_id": designer_id,
-        "event_type": "Wedding",
-        "status_label": "In production",
-        "outfit_summary": "Habesha kemis, hand-woven Tibeb, size M",
+        "designer_name": designer_name,
         "total_price": price,
         "deposit_paid": deposit,
-        "balance_due": price - deposit,
-        "ship_to": "Frankfurt, Germany",
-        "eta": (date.today() + timedelta(days=25)).strftime("%d %b %Y"),
-        "timeline": [
-            {"state": "done", "title": "Order confirmed", "sub": "Deposit received", "time": "Today"},
-            {"state": "now", "title": "In production", "sub": f"{designer_name} is preparing your outfit", "time": "Est. 18 days"},
-            {"state": "upcoming", "title": "Shipped", "sub": None, "time": None},
-            {"state": "upcoming", "title": "Delivered", "sub": None, "time": None},
-        ],
-    }
+        "status": "in_production",
+        "ship_to": f"{req_dict.get('city', 'Frankfurt')}, {req_dict.get('country', 'Germany')}",
+        "eta": eta_date.strftime("%d %b %Y"),
+    })
+    
     return RedirectResponse(url=f"/orders/{order_id}", status_code=303)
 
 
 @router.get("/orders/{order_id}", response_class=HTMLResponse)
 async def order_tracking(request: Request, order_id: str):
-    order = _orders.get(order_id)
+    order = await get_order(order_id)
+    
     if not order:
-        order = {
-            "ref": f"HF-{order_id.upper()}", "designer_name": "Selam Abrham", "designer_id": "des_selam",
-            "event_type": "Wedding", "status_label": "In production",
+        # Fallback demo data
+        order_dict = {
+            "ref": f"HF-{order_id.upper()}",
+            "designer_name": "Selam Abrham",
+            "designer_id": "des_selam",
+            "event_type": "Wedding",
+            "status_label": "In production",
             "outfit_summary": "Habesha kemis, hand-woven Tibeb, size M",
-            "total_price": 220, "deposit_paid": 88, "balance_due": 132,
-            "ship_to": "Frankfurt, Germany", "eta": "25 Jul 2026",
+            "total_price": 220,
+            "deposit_paid": 88,
+            "balance_due": 132,
+            "ship_to": "Frankfurt, Germany",
+            "eta": "25 Jul 2026",
             "timeline": [
                 {"state": "done", "title": "Order confirmed", "sub": "Deposit received", "time": "Today"},
                 {"state": "now", "title": "In production", "sub": "Selam Abrham is preparing your outfit", "time": "Est. 18 days"},
@@ -232,9 +187,21 @@ async def order_tracking(request: Request, order_id: str):
                 {"state": "upcoming", "title": "Delivered", "sub": None, "time": None},
             ],
         }
+    else:
+        order_dict = order.to_dict()
+        order_dict["ref"] = f"HF-{order_id.upper()}"
+        order_dict["status_label"] = order.status.replace("_", " ").title()
+        order_dict["outfit_summary"] = f"Custom {order_dict.get('event_type', 'Outfit')}"
+        order_dict["timeline"] = [
+            {"state": "done", "title": "Order confirmed", "sub": "Deposit received", "time": "Today"},
+            {"state": "now", "title": "In production", "sub": f"{order.designer_name} is preparing your outfit", "time": "Est. 18 days"},
+            {"state": "upcoming", "title": "Shipped", "sub": None, "time": None},
+            {"state": "upcoming", "title": "Delivered", "sub": None, "time": None},
+        ]
+    
     return templates.TemplateResponse(request, "pages/order_tracking.html", {
         "active_page": "orders",
-        "order": order,
+        "order": order_dict,
         "flash": {"type": "ok", "message": "Order confirmed! We've notified your designer."},
     })
 
@@ -250,8 +217,13 @@ async def how_it_works(request: Request):
 
 @router.get("/designers", response_class=HTMLResponse)
 async def designers_list(request: Request):
+    # Get all designers from database
+    designers = await get_all_designers()
+    designers_data = [d.to_dict() for d in designers]
+    
     return templates.TemplateResponse(request, "pages/landing.html", {
         "active_page": "designers",
         "events": EVENTS,
+        "designers": designers_data,
         "flash": None,
     })

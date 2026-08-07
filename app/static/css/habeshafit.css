@@ -109,14 +109,24 @@ input, select, textarea { font-family: inherit; }
   font-family: var(--font-body); font-size: 13px; font-weight: 500;
   border: 1px solid var(--border-m);
   background: var(--surf); color: var(--ink-2);
-  cursor: pointer; transition: background 0.15s, color 0.15s;
+  cursor: pointer; transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   white-space: nowrap; text-decoration: none;
+  position: relative; overflow: hidden;
 }
-.btn:hover { background: var(--surf-1); color: var(--ink); }
+.btn:hover { 
+  background: var(--surf-1); 
+  color: var(--ink);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px -2px rgba(0,0,0,0.08);
+}
 .btn-primary {
   background: var(--g); color: #fff; border-color: var(--g);
 }
-.btn-primary:hover { background: var(--g-d); }
+.btn-primary:hover { 
+  background: var(--g-d);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px -3px rgba(10, 123, 92, 0.3);
+}
 .btn-lg { padding: 12px 28px; font-size: 15px; border-radius: var(--radius-l); }
 .btn-sm { padding: 6px 14px; font-size: 12px; }
 .btn-ghost {
@@ -125,6 +135,7 @@ input, select, textarea { font-family: inherit; }
 .btn-ghost:hover { background: var(--surf-1); }
 .btn i { font-size: 16px; }
 .btn-sm i { font-size: 14px; }
+.btn:active { transform: translateY(0); }
 
 /* ── Pills / badges ── */
 .pill {
@@ -162,6 +173,11 @@ input, select, textarea { font-family: inherit; }
   background: var(--g-l); border: 1px solid var(--g-m);
   font-size: 12px; font-weight: 500; color: var(--g-d);
   margin-bottom: 20px;
+  animation: fadeInDown 0.5s ease-out;
+}
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .hero-eyebrow i { font-size: 13px; }
 .hero-hed {
@@ -171,6 +187,11 @@ input, select, textarea { font-family: inherit; }
   letter-spacing: -0.03em;
   color: var(--ink);
   margin-bottom: 18px;
+  animation: fadeInUp 0.6s ease-out 0.1s both;
+}
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(15px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 .hero-hed em {
   font-style: normal; color: var(--g);
@@ -180,14 +201,23 @@ input, select, textarea { font-family: inherit; }
   font-size: clamp(14px, 2vw, 17px);
   color: var(--ink-2); line-height: 1.65;
   max-width: 500px; margin: 0 auto 28px;
+  animation: fadeInUp 0.6s ease-out 0.2s both;
 }
-.hero-actions { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.hero-actions { 
+  display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap;
+  animation: fadeInUp 0.6s ease-out 0.3s both;
+}
 .hero-trust {
   display: flex; align-items: center; justify-content: center;
   gap: 20px; flex-wrap: wrap;
   margin-top: 28px;
   padding-top: 28px;
   border-top: 1px solid var(--border);
+  animation: fadeIn 0.8s ease-out 0.4s both;
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 .trust-item {
   display: flex; align-items: center; gap: 6px;
@@ -204,11 +234,14 @@ input, select, textarea { font-family: inherit; }
   background: var(--surf);
   overflow: hidden;
   margin: 0 0 48px;
+  animation: fadeInUp 0.6s ease-out 0.5s both;
 }
 .how-step {
   padding: 24px 22px; text-align: center;
   border-right: 1px solid var(--border);
+  transition: background 0.2s;
 }
+.how-step:hover { background: var(--surf-1); }
 .how-step:last-child { border-right: none; }
 .how-num {
   width: 30px; height: 30px; border-radius: 50%;
@@ -217,6 +250,11 @@ input, select, textarea { font-family: inherit; }
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 12px;
   font-family: var(--font-display);
+  transition: all 0.2s;
+}
+.how-step:hover .how-num {
+  background: var(--g); border-color: var(--g-d); color: #fff;
+  transform: scale(1.1);
 }
 .how-title {
   font-family: var(--font-display);
@@ -242,25 +280,40 @@ input, select, textarea { font-family: inherit; }
   cursor: pointer; text-align: center;
   border: 1.5px solid var(--border);
   background: var(--surf-1);
-  transition: border-color 0.15s, background 0.15s;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative; outline: none;
   user-select: none;
 }
-.ev-card:hover { border-color: var(--g-b); background: var(--surf); }
+.ev-card:hover { 
+  border-color: var(--g-b); 
+  background: var(--surf);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px -4px rgba(10, 123, 92, 0.1);
+}
 .ev-card.selected {
   border-color: var(--g);
   background: var(--g-l);
   box-shadow: 0 0 0 3px var(--g-m);
+  transform: translateY(-2px);
 }
 .ev-check {
   position: absolute; top: 8px; right: 8px;
   width: 18px; height: 18px; border-radius: 50%;
   background: var(--g); display: none;
   align-items: center; justify-content: center;
+  animation: scaleIn 0.2s ease-out;
+}
+@keyframes scaleIn {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
 }
 .ev-check i { font-size: 10px; color: #fff; }
 .ev-card.selected .ev-check { display: flex; }
-.ev-icon { font-size: 28px; margin-bottom: 10px; display: block; }
+.ev-icon { 
+  font-size: 28px; margin-bottom: 10px; display: block;
+  transition: transform 0.2s;
+}
+.ev-card:hover .ev-icon { transform: scale(1.1); }
 .ev-name {
   font-family: var(--font-display);
   font-size: 13px; font-weight: 600;
@@ -391,6 +444,47 @@ input, select, textarea { font-family: inherit; }
 }
 .step-counter { font-size: 12px; color: var(--ink-3); }
 
+/* ── Value props grid ── */
+.value-grid {
+  display: grid; grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 14px;
+}
+.value-card {
+  background: var(--surf); border-radius: var(--radius-l);
+  border: 1px solid var(--border);
+  padding: 24px 22px; text-align: center;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.value-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px -8px rgba(10, 123, 92, 0.15);
+  border-color: var(--g-m);
+}
+.value-icon {
+  width: 52px; height: 52px; border-radius: 14px;
+  background: var(--g-l); border: 1.5px solid var(--g-m);
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 16px;
+  transition: all 0.2s;
+}
+.value-card:hover .value-icon {
+  background: var(--g); border-color: var(--g-d);
+  transform: scale(1.05);
+}
+.value-icon i {
+  font-size: 26px; color: var(--g);
+  transition: color 0.2s;
+}
+.value-card:hover .value-icon i { color: #fff; }
+.value-title {
+  font-family: var(--font-display);
+  font-size: 15px; font-weight: 600; color: var(--ink);
+  margin-bottom: 8px; letter-spacing: -0.2px;
+}
+.value-desc {
+  font-size: 13px; color: var(--ink-3); line-height: 1.6;
+}
+
 /* ── Offers page ── */
 .offers-page { max-width: 700px; margin: 40px auto; }
 .page-hed {
@@ -512,6 +606,9 @@ input, select, textarea { font-family: inherit; }
 .flash-err  { background: var(--red-l); color: #791F1F; }
 
 /* ── Responsive ── */
+@media (max-width: 900px) {
+  .value-grid   { grid-template-columns: 1fr; }
+}
 @media (max-width: 640px) {
   .events-grid  { grid-template-columns: repeat(2,1fr); }
   .how-strip    { grid-template-columns: 1fr; }

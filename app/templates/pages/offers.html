@@ -5,10 +5,14 @@
 <div class="page-wrap">
   <div class="offers-page">
 
-    <div class="page-hed">{{ offers|length }} designers matched for your {{ order_request.event_type|lower }}</div>
-    <p class="page-sub">Review each offer and choose the one that fits your vision.</p>
+    <!-- Page Header -->
+    <div class="page-header-enhanced">
+      <h1 class="page-hed">{{ offers|length }} designers matched for your {{ order_request.event_type|lower }}</h1>
+      <p class="page-sub">Review each offer and choose the one that fits your vision.</p>
+    </div>
 
-    <div class="req-strip">
+    <!-- Order Request Summary Strip -->
+    <div class="req-strip-enhanced">
       <div class="rtag"><i class="ti ti-circle-check" aria-hidden="true"></i>{{ order_request.event_type }}</div>
       <div class="rsep"></div>
       <div class="rtag"><i class="ti ti-user" aria-hidden="true"></i>{{ order_request.gender|capitalize }} · {{ order_request.size }}</div>
@@ -20,63 +24,72 @@
       <div class="rtag"><i class="ti ti-calendar" aria-hidden="true"></i>{{ order_request.event_date }}</div>
     </div>
 
+    <!-- Offers List -->
     {% for offer in offers %}
-    <div class="offer-card {% if loop.first %}featured{% endif %}">
+    <div class="offer-card-enhanced {% if loop.first %}featured{% endif %}">
       {% if loop.first %}
-      <div class="offer-top-badge">Best match — budget &amp; timeline</div>
+      <div class="offer-top-badge-enhanced">
+        <i class="ti ti-star-fill" aria-hidden="true"></i> Best match — budget & timeline
+      </div>
       {% endif %}
-      <div class="offer-body">
-        <div class="offer-head">
-          <div class="designer-av" style="background:{{ offer.avatar_bg }}; color:{{ offer.avatar_color }}">
+      
+      <div class="offer-body-enhanced">
+        <!-- Designer Header -->
+        <div class="offer-head-enhanced">
+          <div class="designer-av-enhanced" style="background:{{ offer.avatar_bg }}; color:{{ offer.avatar_color }}">
             {{ offer.initials }}
           </div>
-          <div class="designer-info">
-            <div class="designer-name">{{ offer.designer_name }}</div>
-            <div class="designer-loc"><i class="ti ti-map-pin" aria-hidden="true"></i>{{ offer.location }}</div>
-            <div class="designer-stars">
-              <div class="star-row">
-                {% for _ in range(5) %}<i class="ti ti-star" aria-hidden="true"></i>{% endfor %}
+          <div class="designer-info-enhanced">
+            <div class="designer-name-enhanced">{{ offer.designer_name }}</div>
+            <div class="designer-loc-enhanced"><i class="ti ti-map-pin" aria-hidden="true"></i>{{ offer.location }}</div>
+            <div class="designer-stars-enhanced">
+              <div class="star-row-enhanced">
+                {% for _ in range(5) %}<i class="ti ti-star-fill" aria-hidden="true"></i>{% endfor %}
               </div>
-              <span class="star-count">{{ offer.rating }} · {{ offer.order_count }} orders</span>
+              <span class="star-count-enhanced">{{ offer.rating }} · {{ offer.order_count }} orders</span>
             </div>
           </div>
-          <div class="offer-price">
-            <div class="offer-price-main">€{{ offer.price }}</div>
-            <div class="offer-price-sub">{{ offer.shipping_note }}</div>
+          <div class="offer-price-enhanced">
+            <div class="offer-price-main-enhanced">€{{ offer.price }}</div>
+            <div class="offer-price-sub-enhanced">{{ offer.shipping_note }}</div>
           </div>
         </div>
 
-        <div class="offer-divider"></div>
+        <div class="offer-divider-enhanced"></div>
 
-        <p class="offer-desc">{{ offer.description }}</p>
+        <!-- Offer Description -->
+        <p class="offer-desc-enhanced">{{ offer.description }}</p>
 
-        <div class="offer-tags">
+        <!-- Tags -->
+        <div class="offer-tags-enhanced">
           {% for tag in offer.tags %}
-          <div class="offer-tag">{{ tag }}</div>
+          <div class="offer-tag-enhanced">{{ tag }}</div>
           {% endfor %}
         </div>
 
-        <div class="offer-meta">
-          <div class="meta-cell">
-            <div class="meta-val">{{ offer.production_days }} days</div>
-            <div class="meta-label">Production</div>
+        <!-- Production Meta -->
+        <div class="offer-meta-enhanced">
+          <div class="meta-cell-enhanced">
+            <div class="meta-val-enhanced">{{ offer.production_days }} days</div>
+            <div class="meta-label-enhanced">Production</div>
           </div>
-          <div class="meta-cell">
-            <div class="meta-val">{{ offer.shipping_time }}</div>
-            <div class="meta-label">Shipping</div>
+          <div class="meta-cell-enhanced">
+            <div class="meta-val-enhanced">{{ offer.shipping_time }}</div>
+            <div class="meta-label-enhanced">Shipping</div>
           </div>
-          <div class="meta-cell">
-            <div class="meta-val">€{{ offer.deposit }}</div>
-            <div class="meta-label">Deposit (40%)</div>
+          <div class="meta-cell-enhanced">
+            <div class="meta-val-enhanced">€{{ offer.deposit }}</div>
+            <div class="meta-label-enhanced">Deposit (40%)</div>
           </div>
         </div>
 
-        <div class="offer-actions">
-          <a href="/designers/{{ offer.designer_id }}/message" class="btn btn-sm" style="flex:1; justify-content:center">
+        <!-- Action Buttons -->
+        <div class="offer-actions-enhanced">
+          <a href="/designers/{{ offer.designer_id }}/message" class="btn btn-secondary btn-sm-enhanced" style="flex:1; justify-content:center">
             <i class="ti ti-message" aria-hidden="true"></i>Ask {{ offer.designer_name.split(' ')[0] }}
           </a>
           <form method="POST" action="/offers/{{ offer.id }}/choose" style="flex:2">
-            <button type="submit" class="btn btn-primary btn-sm" style="width:100%">
+            <button type="submit" class="btn btn-primary btn-sm-enhanced" style="width:100%">
               <i class="ti ti-check" aria-hidden="true"></i>Choose this offer
             </button>
           </form>

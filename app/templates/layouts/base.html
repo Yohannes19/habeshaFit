@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{% block title %}HabeshaFit — Dressed for the moment{% endblock %}</title>
-  <meta name="description" content="Order Habesha outfits for weddings, church holidays, graduations and cultural events. Matched with vetted designers from Ethiopia and your city.">
+  <title>{% block title %}HabeshaFit — Elegance Woven Into Heritage{% endblock %}</title>
+  <meta name="description" content="Experience bespoke Habesha fashion crafted by master designers. Custom traditional attire for weddings, celebrations, and cultural moments.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <link rel="stylesheet" href="/static/css/habeshafit.css">
   {% block extra_head %}{% endblock %}
@@ -17,18 +17,24 @@
     <a href="/" class="nav-logo">
       <div class="nav-mark">
         <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
-          <path d="M16 4C10 4 6 9 6 14C6 20 10 24 16 28C22 24 26 20 26 14C26 9 22 4 16 4Z" fill="white" opacity="0.9"/>
-          <path d="M12 14L16 10L20 14L16 24Z" fill="#C2E8DA" opacity="0.9"/>
+          <defs>
+            <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" style="stop-color:#fff;stop-opacity:0.95"/>
+              <stop offset="100%" style="stop-color:#A8DCC8;stop-opacity:0.9"/>
+            </linearGradient>
+          </defs>
+          <path d="M16 4C10 4 6 9 6 14C6 20 10 24 16 28C22 24 26 20 26 14C26 9 22 4 16 4Z" fill="url(#logoGrad)" opacity="0.95"/>
+          <path d="M12 14L16 10L20 14L16 24Z" fill="#FEF9E7" opacity="0.9"/>
         </svg>
       </div>
       <span class="nav-name">Habesha<span>Fit</span></span>
     </a>
     <div class="nav-links">
       <a href="/" class="nav-link {% if active_page == 'home' %}active{% endif %}">Home</a>
-      <a href="/how-it-works" class="nav-link {% if active_page == 'how' %}active{% endif %}">How it works</a>
+      <a href="/how-it-works" class="nav-link {% if active_page == 'how' %}active{% endif %}">How It Works</a>
       <a href="/designers" class="nav-link {% if active_page == 'designers' %}active{% endif %}">Designers</a>
       <a href="/request/new" class="nav-cta">
-        <i class="ti ti-sparkles" aria-hidden="true"></i>Start your order
+        <i class="ti ti-sparkles" aria-hidden="true"></i>Start Your Order
       </a>
     </div>
   </nav>
@@ -46,35 +52,37 @@
     {% block content %}{% endblock %}
   </main>
 
-  <footer style="border-top:1px solid var(--border); margin-top:80px; padding:40px 0; background:var(--surf)">
-    <div class="page-wrap flex items-center" style="justify-content:space-between; flex-wrap:wrap; gap:12px;">
-      <div class="flex items-center gap-8">
-        <div class="nav-mark" style="width:26px;height:26px;border-radius:7px">
-          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" style="width:16px;height:16px">
-            <path d="M16 4C10 4 6 9 6 14C6 20 10 24 16 28C22 24 26 20 26 14C26 9 22 4 16 4Z" fill="white" opacity="0.9"/>
-            <path d="M12 14L16 10L20 14L16 24Z" fill="#C2E8DA" opacity="0.9"/>
+  <footer style="border-top:1px solid var(--border); margin-top:80px; padding:48px 0; background:linear-gradient(180deg, var(--surf) 0%, var(--surf-1) 100%)">
+    <div class="page-wrap flex items-center" style="justify-content:space-between; flex-wrap:wrap; gap:16px;">
+      <div class="flex items-center gap-12">
+        <div class="nav-mark" style="width:32px;height:32px;border-radius:10px">
+          <svg viewBox="0 0 32 32" fill="none" aria-hidden="true" style="width:18px;height:18px">
+            <path d="M16 4C10 4 6 9 6 14C6 20 10 24 16 28C22 24 26 20 26 14C26 9 22 4 16 4Z" fill="white" opacity="0.95"/>
+            <path d="M12 14L16 10L20 14L16 24Z" fill="#FEF9E7" opacity="0.9"/>
           </svg>
         </div>
-        <span style="font-size:12px;color:var(--ink-3)">© 2026 HabeshaFit. Made for the diaspora.</span>
+        <div>
+          <span style="font-size:13px;color:var(--ink-2);font-weight:600">© 2026 HabeshaFit</span>
+          <p style="font-size:12px;color:var(--ink-3);margin-top:4px">Celebrating Ethiopian heritage through timeless fashion</p>
+        </div>
       </div>
-      <div class="flex gap-12" style="font-size:12px;color:var(--ink-3)">
-        <a href="/designers/apply" style="color:var(--ink-2)">Become a designer</a>
-        <span>·</span>
-        <a href="#" style="color:var(--ink-2)">Support</a>
+      <div class="flex gap-16" style="font-size:13px;color:var(--ink-3)">
+        <a href="/designers/apply" style="color:var(--ink-2);font-weight:500;transition:color 0.2s">Become a Designer</a>
+        <span style="color:var(--border)">·</span>
+        <a href="#" style="color:var(--ink-2);font-weight:500;transition:color 0.2s">Support</a>
+        <span style="color:var(--border)">·</span>
+        <a href="#" style="color:var(--ink-2);font-weight:500;transition:color 0.2s">Privacy</a>
       </div>
     </div>
   </footer>
 
   <script>
-    // Navbar scroll effect
     window.addEventListener('scroll', function() {
       const nav = document.querySelector('.nav');
-      if (nav) {
-        if (window.scrollY > 10) {
-          nav.classList.add('scrolled');
-        } else {
-          nav.classList.remove('scrolled');
-        }
+      if (nav && window.scrollY > 20) {
+        nav.classList.add('scrolled');
+      } else if (nav) {
+        nav.classList.remove('scrolled');
       }
     });
   </script>

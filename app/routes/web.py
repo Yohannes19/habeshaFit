@@ -9,7 +9,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from app.db import (
     create_request, get_request, generate_offers_for_request,
-    create_order, get_order, get_all_designers
+    create_order, get_order, get_all_designers, submit_designer_application
 )
 
 router = APIRouter()
@@ -88,16 +88,27 @@ async def offers(request: Request, request_id: str):
     if not request_data:
         raise HTTPException(status_code=404, detail="Request not found")
     
-    req_dict = request_data.to_dict()
+    # Convert to dict manually
+    req_dict = {
+        "id": request_data.id,
+        "event_type": request_data.event_type,
+        "description": request_data.description,
+        "budget_min": request_data.budget_min,
+        "budget_max": request_data.budget_max,
+        "budget": str(request_data.budget_min),  # For template compatibility
+        "deadline": request_data.deadline.isoformat() if request_data.deadline else None,
+        "status": request_data.status.value if request_data.status else "pending",
+    }
     
     # Generate offers using matching algorithm
     offers_list = await generate_offers_for_request(req_dict)
     
     # Pretty-format event date
     try:
-        d = date.fromisoformat(req_dict["event_date"])
-        req_dict["event_date"] = d.strftime("%d %b %Y")
-    except (ValueError, KeyError):
+        d = request_data.deadline
+        if d:
+            req_dict["event_date"] = d.strftime("%d %b %Y")
+    except (ValueError, KeyError, AttributeError):
         pass
 
     return templates.TemplateResponse(request, "pages/offers.html", {
@@ -121,19 +132,25 @@ async def choose_offer(offer_id: str, request: Request):
         req_dict = {
             "city": "Frankfurt", "country": "Germany", "event_type": "Wedding"
         }
+        client_id = ""
     else:
-        req_dict = req.to_dict()
+        req_dict = {
+            "city": "Unknown", 
+            "country": "Unknown", 
+            "event_type": req.event_type
+        }
+        client_id = req.client_id
     
     # Designer mapping based on offer_id
     designer_map = {
-        f"off_{did}": (name, did, price) 
-        for did, name, price in [
-            ("des_selam", "Selam Abrham", 220),
-            ("des_mekdes", "Mekdes Tadesse", 190),
-            ("des_hiwot", "Hiwot Girma", 285),
-            ("des_yonas", "Yonas Kebede", 310),
-            ("des_lily", "Lily Haile", 265),
-        ]
+        f"off_des_{i}": (name, f"des_{i}", price) 
+        for i, (name, price) in enumerate([
+            ("Selam Abrham", 220),
+            ("Mekdes Tadesse", 190),
+            ("Hiwot Girma", 285),
+            ("Yonas Kebede", 310),
+            ("Lily Haile", 265),
+        ])
     }
     
     designer_name, designer_id, price = designer_map.get(
@@ -157,6 +174,7 @@ async def choose_offer(offer_id: str, request: Request):
         "status": "in_production",
         "ship_to": f"{req_dict.get('city', 'Frankfurt')}, {req_dict.get('country', 'Germany')}",
         "eta": eta_date.strftime("%d %b %Y"),
+        "notes": "",
     })
     
     return RedirectResponse(url=f"/orders/{order_id}", status_code=303)
@@ -219,7 +237,22 @@ async def how_it_works(request: Request):
 async def designers_list(request: Request):
     # Get all designers from database
     designers = await get_all_designers()
-    designers_data = [d.to_dict() for d in designers]
+    
+    # Convert to dict format for templates
+    designers_data = []
+    for d in designers:
+        designers_data.append({
+            "id": d.id,
+            "business_name": d.business_name or f"Designer {d.id[:6]}",
+            "bio": d.bio or "",
+            "specialty": d.specialty or "Traditional Attire",
+            "location": d.location or "Ethiopia",
+            "years_experience": d.years_experience or 0,
+            "rating": d.rating or 4.5,
+            "total_reviews": d.total_reviews or 10,
+            "is_available": d.is_available,
+            "portfolio_url": d.portfolio_url,
+        })
     
     return templates.TemplateResponse(request, "pages/designers.html", {
         "active_page": "designers",
@@ -235,3 +268,33 @@ async def designer_apply(request: Request):
         "active_page": "designers",
         "flash": None,
     })
+
+
+@router.post("/designers/apply/submit")
+async def submit_designer_application_form(
+    full_name: str = Form(...),
+    email: str = Form(...),
+    business_name: str = Form(""),
+    specialty: str = Form(...),
+    location: str = Form(...),
+    years_experience: int = Form(0),
+    bio: str = Form(""),
+    portfolio_url: str = Form(""),
+):
+    """Handle designer application submission."""
+    try:
+        await submit_designer_application({
+            "full_name": full_name,
+            "email": email,
+            "business_name": business_name or full_name,
+            "specialty": specialty,
+            "location": location,
+            "years_experience": years_experience,
+            "bio": bio,
+            "portfolio_url": portfolio_url,
+        })
+        
+        # Redirect to landing page with success message
+        return RedirectResponse(url="/?status=application_submitted", status_code=303)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Application failed: {str(e)}")

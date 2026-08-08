@@ -3,30 +3,32 @@
 
 {% block content %}
 <div class="page-wrap">
-  <div class="tracking-page">
+  <div class="tracking-page-enhanced">
 
-    <div class="text-center" style="margin-bottom:24px">
-      <div style="width:48px;height:48px;border-radius:50%;background:var(--g-l);border:1.5px solid var(--g-m);display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
-        <i class="ti ti-check" style="font-size:22px;color:var(--g)" aria-hidden="true"></i>
+    <!-- Success Header -->
+    <div class="tracking-header-enhanced">
+      <div class="tracking-icon-wrapper">
+        <i class="ti ti-check" style="font-size:24px;" aria-hidden="true"></i>
       </div>
-      <div class="page-hed">Order confirmed!</div>
-      <p class="page-sub">{{ order.designer_name }} has started preparing your {{ order.event_type|lower }} outfit.</p>
+      <h1 class="page-hed-enhanced">Order confirmed!</h1>
+      <p class="page-sub-enhanced">{{ order.designer_name }} has started preparing your {{ order.event_type|lower }} outfit.</p>
     </div>
 
-    <div class="tracking-card">
-      <div class="tracking-head">
+    <!-- Tracking Card -->
+    <div class="tracking-card-enhanced">
+      <div class="tracking-head-enhanced">
         <div>
-          <div style="font-size:13px;font-weight:500;color:var(--ink)">{{ order.designer_name }}</div>
-          <div class="tracking-ref">{{ order.ref }}</div>
+          <div class="designer-name-small">{{ order.designer_name }}</div>
+          <div class="tracking-ref-enhanced">{{ order.ref }}</div>
         </div>
-        <span class="pill pill-green">{{ order.status_label }}</span>
+        <span class="pill pill-green-enhanced">{{ order.status_label }}</span>
       </div>
 
-      <div class="track-steps">
+      <div class="track-steps-enhanced">
         {% for step in order.timeline %}
-        <div class="track-step">
-          <div class="track-left">
-            <div class="track-dot {{ step.state }}">
+        <div class="track-step-enhanced">
+          <div class="track-left-enhanced">
+            <div class="track-dot-enhanced {{ step.state }}">
               {% if step.state == 'done' %}
               <i class="ti ti-check" aria-hidden="true"></i>
               {% elif step.state == 'now' %}
@@ -35,34 +37,36 @@
               <i class="ti ti-circle" aria-hidden="true"></i>
               {% endif %}
             </div>
-            <div class="track-line {{ 'done' if step.state == 'done' else '' }}"></div>
+            <div class="track-line-enhanced {{ 'done' if step.state == 'done' else '' }}"></div>
           </div>
-          <div class="track-right">
-            <div class="track-title">{{ step.title }}</div>
-            {% if step.sub %}<div class="track-sub">{{ step.sub }}</div>{% endif %}
-            {% if step.time %}<div class="track-time">{{ step.time }}</div>{% endif %}
+          <div class="track-right-enhanced">
+            <div class="track-title-enhanced">{{ step.title }}</div>
+            {% if step.sub %}<div class="track-sub-enhanced">{{ step.sub }}</div>{% endif %}
+            {% if step.time %}<div class="track-time-enhanced">{{ step.time }}</div>{% endif %}
           </div>
         </div>
         {% endfor %}
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-head">
-        <span class="card-title">Order summary</span>
+    <!-- Order Summary Card -->
+    <div class="card-enhanced">
+      <div class="card-head-enhanced">
+        <span class="card-title-enhanced">Order summary</span>
       </div>
-      <div class="card-body">
-        <div class="sum-row"><span class="sum-k">Outfit</span><span class="sum-v">{{ order.outfit_summary }}</span></div>
-        <div class="sum-row"><span class="sum-k">Total price</span><span class="sum-v">€{{ order.total_price }}</span></div>
-        <div class="sum-row"><span class="sum-k">Deposit paid</span><span class="sum-v">€{{ order.deposit_paid }}</span></div>
-        <div class="sum-row"><span class="sum-k">Balance due on delivery</span><span class="sum-v">€{{ order.balance_due }}</span></div>
-        <div class="sum-row"><span class="sum-k">Ship to</span><span class="sum-v">{{ order.ship_to }}</span></div>
-        <div class="sum-row"><span class="sum-k">Estimated delivery</span><span class="sum-v">{{ order.eta }}</span></div>
+      <div class="card-body-enhanced">
+        <div class="sum-row-enhanced"><span class="sum-k-enhanced">Outfit</span><span class="sum-v-enhanced">{{ order.outfit_summary }}</span></div>
+        <div class="sum-row-enhanced"><span class="sum-k-enhanced">Total price</span><span class="sum-v-enhanced">€{{ order.total_price }}</span></div>
+        <div class="sum-row-enhanced"><span class="sum-k-enhanced">Deposit paid</span><span class="sum-v-enhanced">€{{ order.deposit_paid }}</span></div>
+        <div class="sum-row-enhanced"><span class="sum-k-enhanced">Balance due on delivery</span><span class="sum-v-enhanced">€{{ order.balance_due }}</span></div>
+        <div class="sum-row-enhanced"><span class="sum-k-enhanced">Ship to</span><span class="sum-v-enhanced">{{ order.ship_to }}</span></div>
+        <div class="sum-row-enhanced"><span class="sum-k-enhanced">Estimated delivery</span><span class="sum-v-enhanced">{{ order.eta }}</span></div>
       </div>
     </div>
 
-    <div class="flex gap-12 mt-20" style="justify-content:center">
-      <a href="/designers/{{ order.designer_id }}/message" class="btn">
+    <!-- Action Buttons -->
+    <div class="tracking-actions-enhanced">
+      <a href="/designers/{{ order.designer_id }}/message" class="btn btn-primary">
         <i class="ti ti-message" aria-hidden="true"></i>Message {{ order.designer_name.split(' ')[0] }}
       </a>
       <a href="/" class="btn btn-ghost">

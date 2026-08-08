@@ -88,7 +88,7 @@
           <a href="/designers/{{ offer.designer_id }}/message" class="btn btn-secondary btn-sm-enhanced" style="flex:1; justify-content:center">
             <i class="ti ti-message" aria-hidden="true"></i>Ask {{ offer.designer_name.split(' ')[0] }}
           </a>
-          <form method="POST" action="/offers/{{ offer.id }}/choose" style="flex:2">
+          <form method="POST" action="/offers/{{ offer.id }}/choose?request_id={{ order_request.id }}" style="flex:2">
             <button type="submit" class="btn btn-primary btn-sm-enhanced" style="width:100%">
               <i class="ti ti-check" aria-hidden="true"></i>Choose this offer
             </button>

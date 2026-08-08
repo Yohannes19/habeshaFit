@@ -1,0 +1,117 @@
+{% extends "layouts/base.html" %}
+{% block title %}Our Designers — HabeshaFit{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+  <!-- Page Header -->
+  <div class="page-header-enhanced">
+    <h1 class="page-hed">Meet Our Vetted Designers</h1>
+    <p class="page-sub">Skilled artisans crafting authentic Habesha attire with modern excellence.</p>
+  </div>
+
+  <!-- Designers Grid -->
+  <div class="designers-grid-enhanced">
+    {% for designer in designers %}
+    <div class="designer-card-enhanced">
+      <!-- Designer Avatar -->
+      <div class="designer-avatar-wrapper">
+        <div class="designer-avatar-enhanced" style="background: linear-gradient(135deg, {{ designer.avatar_bg | default('#0D5F4E') }}, {{ designer.avatar_color | default('#C9A227') }})">
+          {{ designer.full_name[0] if designer.full_name else 'D' }}
+        </div>
+        {% if designer.is_available %}
+        <div class="availability-badge">Available</div>
+        {% endif %}
+      </div>
+
+      <!-- Designer Info -->
+      <div class="designer-info-section">
+        <h3 class="designer-name-enhanced">{{ designer.full_name or designer.business_name }}</h3>
+        {% if designer.business_name %}
+        <p class="business-name">{{ designer.business_name }}</p>
+        {% endif %}
+        
+        <div class="designer-location">
+          <i class="ti ti-map-pin" aria-hidden="true"></i>
+          {{ designer.location or 'Addis Ababa, Ethiopia' }}
+        </div>
+
+        <!-- Rating -->
+        <div class="designer-rating">
+          <div class="star-row-enhanced">
+            {% for _ in range(5) %}
+            <i class="ti ti-star-fill" aria-hidden="true"></i>
+            {% endfor %}
+          </div>
+          <span class="rating-text">{{ designer.rating or '5.0' }} · {{ designer.total_reviews or 0 }} reviews</span>
+        </div>
+
+        <!-- Specialty -->
+        {% if designer.specialty %}
+        <div class="specialty-badge">
+          <i class="ti ti-needle-thread" aria-hidden="true"></i>
+          {{ designer.specialty }}
+        </div>
+        {% endif %}
+
+        <!-- Experience -->
+        {% if designer.years_experience %}
+        <div class="experience-badge">
+          <i class="ti ti-clock" aria-hidden="true"></i>
+          {{ designer.years_experience }} years experience
+        </div>
+        {% endif %}
+
+        <!-- Bio -->
+        {% if designer.bio %}
+        <p class="designer-bio">{{ designer.bio[:100] }}{% if designer.bio|length > 100 %}...{% endif %}</p>
+        {% endif %}
+
+        <!-- Tags -->
+        <div class="designer-tags">
+          <span class="tag">Hand-woven</span>
+          <span class="tag">Custom Fit</span>
+          {% if designer.years_experience and designer.years_experience > 5 %}
+          <span class="tag featured">Expert</span>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="designer-actions">
+        <a href="/designers/{{ designer.id }}/portfolio" class="btn btn-secondary btn-sm-enhanced" style="flex:1; justify-content:center">
+          <i class="ti ti-image" aria-hidden="true"></i> Portfolio
+        </a>
+        <a href="/request/new" class="btn btn-primary btn-sm-enhanced" style="flex:1; justify-content:center">
+          <i class="ti ti-plus" aria-hidden="true"></i> Request
+        </a>
+      </div>
+    </div>
+    {% else %}
+    <!-- No designers fallback -->
+    <div class="no-designers-message">
+      <div class="empty-state-icon">
+        <i class="ti ti-users" aria-hidden="true"></i>
+      </div>
+      <h3>Designers Coming Soon</h3>
+      <p>We're onboarding skilled Habesha designers. Check back soon!</p>
+      <a href="/request/new" class="btn btn-primary">
+        <i class="ti ti-sparkles" aria-hidden="true"></i> Start a Request Anyway
+      </a>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- CTA Section -->
+  <section class="cta-section-enhanced">
+    <div class="cta-content">
+      <h2>Are you a talented Habesha designer?</h2>
+      <p>Join our network and connect with diaspora customers looking for authentic craftsmanship.</p>
+      <a href="/designers/apply" class="btn btn-primary btn-lg">
+        <i class="ti ti-user-plus" aria-hidden="true"></i> Apply to Become a Designer
+      </a>
+    </div>
+  </section>
+
+</div>
+{% endblock %}

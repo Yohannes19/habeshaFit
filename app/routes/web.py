@@ -221,9 +221,17 @@ async def designers_list(request: Request):
     designers = await get_all_designers()
     designers_data = [d.to_dict() for d in designers]
     
-    return templates.TemplateResponse(request, "pages/landing.html", {
+    return templates.TemplateResponse(request, "pages/designers.html", {
         "active_page": "designers",
         "events": EVENTS,
         "designers": designers_data,
+        "flash": None,
+    })
+
+
+@router.get("/designers/apply", response_class=HTMLResponse)
+async def designer_apply(request: Request):
+    return templates.TemplateResponse(request, "pages/designer_apply.html", {
+        "active_page": "designers",
         "flash": None,
     })

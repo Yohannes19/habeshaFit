@@ -1,0 +1,265 @@
+{% extends "layouts/base.html" %}
+{% block title %}Become a Designer — HabeshaFit{% endblock %}
+
+{% block content %}
+<div class="page-wrap">
+
+  <!-- Page Header -->
+  <div class="page-header-enhanced">
+    <h1 class="page-hed">Join Our Designer Network</h1>
+    <p class="page-sub">Connect with diaspora customers and showcase your Habesha craftsmanship.</p>
+  </div>
+
+  <!-- Application Form -->
+  <div class="form-card-enhanced" style="max-width: 720px; margin: 0 auto;">
+    <form method="POST" action="/designers/apply/submit" class="enhanced-form">
+      
+      <!-- Personal Information Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="ti ti-user" aria-hidden="true"></i>
+          Personal Information
+        </h3>
+        
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="full_name" class="form-label">Full Name *</label>
+            <input type="text" id="full_name" name="full_name" required 
+                   class="form-input-enhanced" placeholder="e.g., Selam Abrham">
+          </div>
+          
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address *</label>
+            <input type="email" id="email" name="email" required 
+                   class="form-input-enhanced" placeholder="selam@example.com">
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="phone" class="form-label">Phone Number *</label>
+            <input type="tel" id="phone" name="phone" required 
+                   class="form-input-enhanced" placeholder="+251 91 123 4567">
+          </div>
+          
+          <div class="form-group">
+            <label for="location" class="form-label">City, Country *</label>
+            <input type="text" id="location" name="location" required 
+                   class="form-input-enhanced" placeholder="Addis Ababa, Ethiopia">
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Information Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="ti ti-briefcase" aria-hidden="true"></i>
+          Business Information
+        </h3>
+        
+        <div class="form-group">
+          <label for="business_name" class="form-label">Business Name (Optional)</label>
+          <input type="text" id="business_name" name="business_name" 
+                 class="form-input-enhanced" placeholder="e.g., Selam's Traditional Attire">
+        </div>
+
+        <div class="form-group">
+          <label for="specialty" class="form-label">Specialty *</label>
+          <select id="specialty" name="specialty" required class="form-input-enhanced">
+            <option value="">Select your specialty...</option>
+            <option value="Habesha Kemis">Habesha Kemis</option>
+            <option value="Traditional Suits">Traditional Suits</option>
+            <option value="Wedding Attire">Wedding Attire</option>
+            <option value="Church Clothing">Church Clothing</option>
+            <option value="Modern Fusion">Modern Fusion</option>
+            <option value="Accessories">Accessories (Shawls, Jewelry, etc.)</option>
+            <option value="All Types">All Types</option>
+          </select>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="years_experience" class="form-label">Years of Experience *</label>
+            <input type="number" id="years_experience" name="years_experience" required 
+                   class="form-input-enhanced" min="0" max="50" placeholder="5">
+          </div>
+          
+          <div class="form-group">
+            <label for="avg_price_range" class="form-label">Average Price Range (€) *</label>
+            <select id="avg_price_range" name="avg_price_range" required class="form-input-enhanced">
+              <option value="">Select range...</option>
+              <option value="50-100">€50 - €100</option>
+              <option value="100-200">€100 - €200</option>
+              <option value="200-300">€200 - €300</option>
+              <option value="300-500">€300 - €500</option>
+              <option value="500+">€500+</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolio & Skills Section -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="ti ti-image" aria-hidden="true"></i>
+          Portfolio & Skills
+        </h3>
+        
+        <div class="form-group">
+          <label for="portfolio_url" class="form-label">Portfolio URL (Instagram, Website, etc.) *</label>
+          <input type="url" id="portfolio_url" name="portfolio_url" required 
+                 class="form-input-enhanced" placeholder="https://instagram.com/your_profile">
+          <small class="form-help">Share links to your work so we can review your craftsmanship.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="bio" class="form-label">About You & Your Craft *</label>
+          <textarea id="bio" name="bio" rows="4" required 
+                    class="form-textarea-enhanced" 
+                    placeholder="Tell us about your experience, techniques, and what makes your work special..."></textarea>
+          <small class="form-help">Briefly describe your background and approach to traditional Habesha attire.</small>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Skills & Techniques *</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" name="skills" value="Hand-weaving">
+              <span class="checkmark"></span>
+              Hand-weaving
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="skills" value="Tibeb Design">
+              <span class="checkmark"></span>
+              Tibeb Design
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="skills" value="Embroidery">
+              <span class="checkmark"></span>
+              Embroidery
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="skills" value="Pattern Making">
+              <span class="checkmark"></span>
+              Pattern Making
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="skills" value="Custom Fitting">
+              <span class="checkmark"></span>
+              Custom Fitting
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="skills" value="Fabric Dyeing">
+              <span class="checkmark"></span>
+              Fabric Dyeing
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Capacity & Availability -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="ti ti-calendar" aria-hidden="true"></i>
+          Capacity & Availability
+        </h3>
+        
+        <div class="form-grid-2">
+          <div class="form-group">
+            <label for="monthly_capacity" class="form-label">Orders Per Month *</label>
+            <input type="number" id="monthly_capacity" name="monthly_capacity" required 
+                   class="form-input-enhanced" min="1" max="20" placeholder="3">
+          </div>
+          
+          <div class="form-group">
+            <label for="avg_turnaround" class="form-label">Avg. Turnaround (Days) *</label>
+            <input type="number" id="avg_turnaround" name="avg_turnaround" required 
+                   class="form-input-enhanced" min="7" max="90" placeholder="21">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Availability *</label>
+          <div class="radio-group-enhanced">
+            <label class="radio-label">
+              <input type="radio" name="availability" value="full_time" required>
+              <span class="radio-custom"></span>
+              Full-time (Available daily)
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="availability" value="part_time">
+              <span class="radio-custom"></span>
+              Part-time (Evenings/Weekends)
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="availability" value="seasonal">
+              <span class="radio-custom"></span>
+              Seasonal (Holiday periods only)
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shipping & Logistics -->
+      <div class="form-section">
+        <h3 class="form-section-title">
+          <i class="ti ti-package" aria-hidden="true"></i>
+          Shipping & Logistics
+        </h3>
+        
+        <div class="form-group">
+          <label class="form-label">Shipping Options *</label>
+          <div class="checkbox-grid">
+            <label class="checkbox-label">
+              <input type="checkbox" name="shipping_options" value="local_pickup">
+              <span class="checkmark"></span>
+              Local Pickup
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="shipping_options" value="domestic">
+              <span class="checkmark"></span>
+              Domestic (Within Ethiopia)
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="shipping_options" value="international">
+              <span class="checkmark"></span>
+              International Shipping
+            </label>
+            <label class="checkbox-label">
+              <input type="checkbox" name="shipping_options" value="diaspora_special">
+              <span class="checkmark"></span>
+              Diaspora Courier Service
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Terms & Submit -->
+      <div class="form-section">
+        <div class="form-group">
+          <label class="checkbox-label" style="display: flex; align-items: flex-start; gap: 12px;">
+            <input type="checkbox" name="terms_accepted" required style="margin-top: 4px;">
+            <span>
+              I agree to HabeshaFit's <a href="#" style="color: var(--primary); text-decoration: underline;">Terms of Service</a> and <a href="#" style="color: var(--primary); text-decoration: underline;">Designer Guidelines</a>. I understand that my portfolio will be reviewed before approval. *
+            </span>
+          </label>
+        </div>
+
+        <div class="form-actions-enhanced">
+          <button type="submit" class="btn btn-primary btn-lg" style="width: 100%;">
+            <i class="ti ti-send" aria-hidden="true"></i>
+            Submit Application
+          </button>
+        </div>
+        
+        <p class="form-footer-note">
+          <i class="ti ti-info-circle" aria-hidden="true"></i>
+          Our team reviews applications within 5-7 business days. We'll contact you via email with next steps.
+        </p>
+      </div>
+
+    </form>
+  </div>
+
+</div>
+{% endblock %}

@@ -20,7 +20,6 @@ target/
 .gradle/
 .mypy_cache/
 .pytest_cache/
-coverage/
 
 # Logs and temp files
 *.log
@@ -40,6 +39,11 @@ coverage/
 # System files
 .DS_Store
 Thumbs.db
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
 
 # Compressed files
 *.zip
@@ -64,7 +68,3 @@ Thumbs.db
 *.tar.bz2
 *.tar.xz
 *.tar.zst
-
-# Documentation and coverage
-htmlcov/
-.coverage
